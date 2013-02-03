@@ -40,13 +40,18 @@ def get_all_links(page):
             break
     return links
 
-#index = []
+#index = {}
 def add_to_index(index,keyword,url):
-    for entry in index:
-        if entry[0] == keyword:
-            entry[1].append(url)
-            return
-    index.append([keyword,[url]])
+    if keyword in index:
+        index[keyword].append(url)
+    else:
+        index[keyword] = [url]
+
+#    for entry in index:
+#        if entry[0] == keyword:
+#            entry[1].append(url)
+#            return
+#    index.append([keyword,[url]])
 
 def add_page_to_index(index,url,content):
     words = content.split()
@@ -54,15 +59,21 @@ def add_page_to_index(index,url,content):
         add_to_index(index,word,url)
 
 def lookup(index,keyword):
-    for e in index:
-        if e[0] == keyword:
-            return e[1]
-    return []
+    if keyword in index:
+        return index[keyword]
+    else:
+        return None
+
+#    for e in index:
+#        if e[0] == keyword:
+#            return e[1]
+#    return []
 
 def crawl_web(seed):
     tocrawl = [seed]
     crawled = []
-    index = []
+#    index = []
+    index = {}
     while tocrawl:
         page = tocrawl.pop()
         if page not in crawled:
@@ -71,7 +82,6 @@ def crawl_web(seed):
             union(tocrawl,get_all_links(content))
             crawled.append(page)
     return crawled,index
-
 
 a,index = crawl_web("http://xkcd.com/353")
 print lookup(index,"to")
